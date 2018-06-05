@@ -1,0 +1,149 @@
+<?php
+
+
+/**
+ * 
+ * This module is used for managing banners.
+ *
+ */
+
+
+
+/**
+ * Implements hook_permission().
+ *
+ * We need some standard entry points so we can have consistent urls for
+ * different Object actions
+ */
+
+
+function banner_manager_permission(){
+	return array(
+		"create new_banner" => array(
+			"title" => t("Create new banner"),
+			"description" => t("Allow users to create new banners"),
+		),
+		"see available banners" => array(
+			"title" => t("See Available Banners"),
+			"description" => t("User can see all available banners"),
+		),
+		"set banner status" => array(
+			"title" => t("Set Banner Status"),
+			"description" => t("Allows users to set Banner Active/Inactive"),
+		),
+		"set allowed sites" => array(
+			"title" => t("Set Allowed Sites"),
+			"description" => t("Allows user to set the sites in which banner can be displayed"),
+		),
+    "add website" => array(
+      "title" => t("Add Website"),
+      "description" => t("Allow user to add new websites to the website_index table"),
+    ),
+    "delete banner" => array(
+      "title" => t("Delete Banner"),
+      "description" => t("Allows user to delete banners permanently"),
+    ),
+    "administer banners" => array(
+      "title" => t("Administer Banners"),
+      "description" => t("Allows users to manage settings like banner file size, extensions etc")
+    )
+	);
+}
+
+
+/**
+ * Implements hook_menu().
+ *
+ * We need some standard entry points so we can have consistent urls for
+ * different Object actions
+ */
+
+function banner_manager_menu() {
+	$items = array();
+
+	$items['banner_manager/new_banner'] = array( // used to create new banners
+		'title' => 'New Banner',
+		'description' => 'Create New Banner.',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('new_banner_form'),
+		'access arguments' => array("create new_banner"),
+		'file' => 'inc/new_banner.inc',
+	);
+
+
+	$items['banner_manager/banners'] = array( // shows all available banners and if they are active/inactive
+		'title' => 'Available Banners',
+		'description' => 'The Banners Available.',
+		'page callback' => 'banner_manager_banners',
+		'page arguments' => array(1),
+		'access arguments' => array('see available banners'),
+		'file' => 'inc/all_banners.inc',
+	);
+
+
+	$items['banner_manager/set_banner_active/%'] = array( // receives ajax call to set a banner active with an argument containing the id of the banner
+		'page callback' => 'set_banner_active',
+		'type' => MENU_CALLBACK,
+		'access arguments' => array('set banner status'),
+		'page arguments' => array(2),
+		'file' => 'inc/set_banner_status.inc',
+	);
+
+
+	$items['banner_manager/set_banner_inactive/%'] = array( // receives ajax call to set a banner inactive with an argument containing the id of the banner
+		'page callback' => 'set_banner_inactive',
+		'type' => MENU_CALLBACK,
+		'access arguments' => array('set banner status'),
+		'page arguments' => array(2),
+		'file' => 'inc/set_banner_status.inc',
+	);
+
+
+	$items['banner_manager/banner_settings/%'] = array( // used to change settings like the sites where the banner will be displayed
+		'title' => 'Banner Settings',
+		'description' => 'Create New Banner.',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('banner_settings_form',2),
+		'access arguments' => array('set allowed sites'),
+		'file' => 'inc/banner_settings.inc',
+	);
+
+  $items['banner_manager/add_website'] = array( // used to change settings like the sites where the banner will be displayed
+    'title' => 'Add Websites',
+    'description' => 'Add new website.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('add_website_form'),
+    'access arguments' => array('add website'),
+    'file' => 'inc/add_website.inc',
+  );
+
+  $items['banner_manager/delete_banner/%'] = array( // receives ajax call to set a banner active with an argument containing the id of the banner
+    'page callback' => 'delete_banner',
+    'type' => MENU_CALLBACK,
+    'access arguments' => array('delete banner'),
+    'page arguments' => array(2),
+    'file' => 'inc/delete_banner.inc',
+  );
+
+  /* ADMIN SETTINGS */
+  //For mentioning extension allowed for image and pdf
+  $items['admin/settings/banners'] = array(
+    'title' => 'Banner Settings',
+    'description' => 'Banner Settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array(
+      'banner_settings_form'
+    ),
+    'access arguments' => array(
+      'administer banners'
+    ),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'settings.inc'
+  );
+
+  return $items;
+}
+
+
+
+

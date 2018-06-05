@@ -35,6 +35,9 @@ xmlrpc.php
 /scripts
 /themes
 
+# Custom Ignore
+/.idea
+
 *.*~
 *.swp
 *~

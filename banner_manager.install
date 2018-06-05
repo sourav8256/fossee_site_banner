@@ -1,0 +1,96 @@
+<?php
+
+
+/**
+*Implementation hook_schema
+*/
+
+function banner_manager_schema(){
+
+
+  /* creating banner_details table it contains details about the banner like banner name, banner file name,
+  time till which banner will be shown etc */
+  $schema['banner_details'] = array(
+    'description' => 'Table to store banner details',
+    'fields' => array(
+      'id' => array(
+        'description' => 'Unique auto-incrementing id of the banner',
+        'type' => 'serial',
+        'not null' => TRUE,
+      ),
+      'file_name' => array(
+        'description' => 'Name of the banner image file',
+        'type' => 'text',
+        'not null' => TRUE,
+      ),
+      'timestamp' => array(
+        'description' => 'Time till which banner will be displayed',
+        'type' => 'float',
+        'size' => 'big',
+        'not null' => FALSE,
+      ),
+      'created_timestamp' => array(
+        'description' => 'TODO: please describe this field!',
+        'type' => 'float',
+        'size' => 'big',
+        'not null' => TRUE,
+      ),
+      'status' => array(
+        'description' => 'TODO: please describe this field!',
+        'type' => 'varchar',
+        'length' => '20',
+        'not null' => FALSE,
+        'default' => 'inactive',
+      ),
+      'status_bool' => array(
+        'description' => 'TODO: please describe this field!',
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => FALSE,
+        'default' => 0,
+      ),
+      'banner_name' => array(
+        'description' => 'TODO: please describe this field!',
+        'type' => 'text',
+        'not null' => TRUE,
+      ),
+      'allowed_sites' => array(
+        'description' => 'TODO: please describe this field!',
+        'type' => 'text',
+        'not null' => FALSE,
+      ),
+    ),
+    'primary key' => array('id'),
+  );
+
+  /* contains the list of probable websites where the banner will be shown */
+  $schema['website_index'] = array(
+    'description' => 'TODO: please describe this table!',
+    'fields' => array(
+      'site_code' => array(
+        'description' => 'TODO: please describe this field!',
+        'type' => 'serial',
+        'not null' => TRUE,
+      ),
+      'site_name' => array(
+        'description' => 'TODO: please describe this field!',
+        'type' => 'varchar',
+        'length' => '30',
+        'not null' => TRUE,
+      ),
+    ),
+    'unique keys' => array(
+      'site_name' => array('site_name'),
+      'UNQ' => array('site_code')
+    ),
+  );
+
+
+  return $schema;
+}
+
+
+function banner_manager_install(){
+
+}
+
