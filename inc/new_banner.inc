@@ -12,7 +12,7 @@ function new_banner_form($form, &$form_state) {
   $form['upload_item'] = array(
     '#type' => 'file',
     '#title' => 'Upload File',
-    '#description' => t('Allowed extensions: gif png jpg jpeg and sixe 2MB'),
+    '#description' => "Allowed file types: [".variable_get('banner_manager_allowed_file_types', NULL)."] and Max. file size: ".variable_get('banner_manager_max_file_size', NULL)/(1024*1024)." MBs",
   );
 
   $form['banner_name'] = array(
@@ -98,16 +98,17 @@ function new_banner_form_submit($form, &$form_state) {
   $timestamp = strtotime($form_state['values']['date']); // converts time string from form to timestamp to be saved in database
   $created_timestamp = time();
 
-
-  $file = file_save_upload('upload_item', $validators, $location); // check validation from the $validators array and saves to a database with location
+  /*saving uploaded file to a temporary location*/
+  $file = file_save_upload('upload_item', $validators, "temporary://"); // check validation from the $validators array and saves to a database with location
 
   if($file) { // check if the file passed the validation and was uploaded
 
     $new_filename = generateNewFilename($file->filename,$created_timestamp);
     $file->status = FILE_STATUS_PERMANENT; // sets file status to permanent so it isn't removed while clearing cache
-    /* changing the file name to a filename_created_timestamp format */
-    if(!rename($real_path."/".$file->filename, $real_path."/".$new_filename)){
-      drupal_set_message("Banner Not Created : File Renaming Failed!");
+
+    /* moving the file in temporary to the desired location and rename it to a filename_created_timestamp format */
+    if(!rename(drupal_realpath("temporary://")."/".$file->filename, $real_path."/".$new_filename)){
+      form_set_error("upload_item","Banner Not Created : File Renaming Failed!");
       return;
     }
     $file->filename = $new_filename;
@@ -136,6 +137,7 @@ function new_banner_form_submit($form, &$form_state) {
       drupal_set_message("File Successfully Uploaded : " . $file->filename);
       drupal_set_message('Banner Name : ' . $banner_name);
       drupal_set_message('End Date : ' . $end_date);
+
     } else {
       drupal_set_message("Sorry Banner Is Not Created For Some Reason!");
     }

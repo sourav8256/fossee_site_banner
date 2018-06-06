@@ -108,7 +108,7 @@ function banner_manager_menu() {
 		'file' => 'inc/banner_settings.inc',
 	);
 
-  $items['banner_manager/add_website'] = array( // used to change settings like the sites where the banner will be displayed
+  $items['banner_manager/add_website'] = array( // used to add new websites to the list of sites where banner will be displayed
     'title' => 'Add Websites',
     'description' => 'Add new website.',
     'page callback' => 'drupal_get_form',
