@@ -7,7 +7,7 @@
 
 function set_banner_active($id) {
 
-	$num_updated = db_update('banner_details') 
+	$num_updated = db_update('fossee_banner_details') 
 	->fields(array(
 		'status' => 'active',
 		'status_bool' => 1,
@@ -34,7 +34,7 @@ function set_banner_inactive($id) {
 
   /*
    * set status field to inactive and status_bool to 0 */
-	$num_updated = db_update('banner_details')
+	$num_updated = db_update('fossee_banner_details')
 	->fields(array(
 		'status' => 'inactive',
 		'status_bool' => 0,

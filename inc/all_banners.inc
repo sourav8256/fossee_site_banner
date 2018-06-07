@@ -6,7 +6,7 @@
  * 
  */
 
-function banner_manager_banners(){
+function fossee_site_banner_banners(){
 
   //$dir = "public://site_banners"; // The directory in which banner files are kept
   $output = NULL;
@@ -15,26 +15,26 @@ function banner_manager_banners(){
 
   $recent_time = 1*24*60*60; // D * H * MIN * SEC
 
-  $result_recent = db_select('banner_details','n')
+  $result_recent = db_select('fossee_banner_details','n')
     ->fields('n',array('id','file_name','status'))
     //->range(0,20)
     //->condition(db_or()->condition('n.created_timestamp',time()-$recent_time,'>')->condition('n.last_updated',time()-$recent_time))
     ->condition('n.last_updated',time()-$recent_time,">")
-    ->execute(); // returns the banners from the banner_details table
+    ->execute(); // returns the banners from the fossee_banner_details table
 
-  $result_active = db_select('banner_details','n')
+  $result_active = db_select('fossee_banner_details','n')
     ->fields('n',array('id','file_name','status'))
     //->range(0,20)
     ->condition('n.status_bool',1,'=')
     //->condition('n.created_timestamp',time()-$recent_time,'<=')
-    ->execute(); // returns the banners from the banner_details table
+    ->execute(); // returns the banners from the fossee_banner_details table
 
-  $result_inactive = db_select('banner_details','n')
+  $result_inactive = db_select('fossee_banner_details','n')
     ->fields('n',array('id','file_name','status'))
     //->range(0,20)
     ->condition('n.status_bool',1,'!=')
     //->condition('n.created_timestamp',time()-$recent_time,'<=')
-    ->execute(); // returns the banners from the banner_details table
+    ->execute(); // returns the banners from the fossee_banner_details table
   // Open a directory, and read its contents
 
   $output .= generateTable($result_recent,"Recent");
@@ -47,12 +47,12 @@ function banner_manager_banners(){
 
 
 /* 
- * This function returns all the available banner files from database table banner_details 
- * used in function banner_manager_banners
+ * This function returns all the available banner files from database table fossee_banner_details 
+ * used in function fossee_site_banner_banners
  */
 
 function getFilesArray(){
-  $result = db_select('banner_details','n')
+  $result = db_select('fossee_banner_details','n')
     ->fields('n',array('id','file_name','status'))
     ->range(0,20)
     //->condition('n.status_bool',1,'=')
@@ -64,16 +64,16 @@ function getFilesArray(){
 
 function generateTable($results,$table_title){
 
-  $dir = variable_get('banner_manager_banner_directory', "not found");
+  $dir = variable_get('fossee_site_banner_banner_directory', "not found");
   $path =  site_banners_path(); // path to the folder containing the banner files
   $realpath = file_create_url($dir); //
-  $settings_form_link = $path =  "http://".$_SERVER['SERVER_NAME'] . base_path() . 'banner_manager/banner_settings/';
+  $settings_form_link = $path =  "http://".$_SERVER['SERVER_NAME'] . base_path() . 'fossee_site_banner/banner_settings/';
   $col_length = 3; // The number of columns in the table in which banners are displayed
   $i=0;
   $banners = array();
   $banner = new stdClass();
 
-  foreach ($results as $result) { // this foreach statement loops throught the result containing banner_details returned from the banner_details table in database
+  foreach ($results as $result) { // this foreach statement loops throught the result containing fossee_banner_details returned from the fossee_banner_details table in database
     # code...
 
     $banner->file_name = $result->file_name;
@@ -201,8 +201,8 @@ function setFrontend(){
 
 	function setBannerActiveAjaxCall(param){
 		console.log(new Date().getTime());
-		console.log(\"http://localhost/fossee/fossee_drupal/banner_manager/set_banner_active/\"+param.id+'/arg'+Math.random());
-		$.get(\"http://localhost/fossee/fossee_drupal/banner_manager/set_banner_active/\"+param.id+'/arg'+Math.random()).success(function(data){ 
+		console.log(\"http://localhost/fossee/fossee_drupal/fossee_site_banner/set_banner_active/\"+param.id+'/arg'+Math.random());
+		$.get(\"http://localhost/fossee/fossee_drupal/fossee_site_banner/set_banner_active/\"+param.id+'/arg'+Math.random()).success(function(data){ 
 			if(data.result == 'success'){
 				setBannerSelected(data.data);
 			}
@@ -219,8 +219,8 @@ function setFrontend(){
 
 	function setBannerInctiveAjaxCall(param){
 		console.log(new Date().getTime());
-		console.log(\"http://localhost/fossee/fossee_drupal/banner_manager/set_banner_inactive/\"+param.id+'/arg'+Math.random());
-		$.get(\"http://localhost/fossee/fossee_drupal/banner_manager/set_banner_inactive/\"+param.id+'/arg'+Math.random()).success(function(data){ 
+		console.log(\"http://localhost/fossee/fossee_drupal/fossee_site_banner/set_banner_inactive/\"+param.id+'/arg'+Math.random());
+		$.get(\"http://localhost/fossee/fossee_drupal/fossee_site_banner/set_banner_inactive/\"+param.id+'/arg'+Math.random()).success(function(data){ 
 			if(data.result == 'success'){
 				setBannerUnselected(data.data);
 			}

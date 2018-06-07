@@ -12,7 +12,7 @@ function new_banner_form($form, &$form_state) {
   $form['upload_item'] = array(
     '#type' => 'file',
     '#title' => 'Upload File',
-    '#description' => "Allowed file types: [".variable_get('banner_manager_allowed_file_types', NULL)."] and Max. file size: ".variable_get('banner_manager_max_file_size', NULL)/(1024*1024)." MBs",
+    '#description' => "Allowed file types: [".variable_get('fossee_site_banner_allowed_file_types', NULL)."] and Max. file size: ".variable_get('fossee_site_banner_max_file_size', NULL)/(1024*1024)." MBs",
   );
 
   $form['banner_name'] = array(
@@ -51,7 +51,7 @@ function new_banner_form($form, &$form_state) {
     '#type' => 'button',
     '#value' => t('See Available Banners'),
     '#attributes' => array(
-      'onclick' => 'window.open(\''.$path.'banner_manager/banners'.'\',"_self"); return false;',
+      'onclick' => 'window.open(\''.$path.'fossee_site_banner/banners'.'\',"_self"); return false;',
     ),
 
   );
@@ -84,11 +84,11 @@ function new_banner_form_validate($form,&$form_state){
 function new_banner_form_submit($form, &$form_state) {
 
   $validators = array(
-    'file_validate_size' => array(variable_get('banner_manager_max_file_size', NULL)), // size restriction for banner image size
-    'file_validate_extensions' => array(variable_get('banner_manager_allowed_file_types', NULL)) // allowed extensions of banner image
+    'file_validate_size' => array(variable_get('fossee_site_banner_max_file_size', NULL)), // size restriction for banner image size
+    'file_validate_extensions' => array(variable_get('fossee_site_banner_allowed_file_types', NULL)) // allowed extensions of banner image
   );
 
-  $location = variable_get('banner_manager_banner_directory', "not found");
+  $location = variable_get('fossee_site_banner_banner_directory', "not found");
   $real_path = drupal_realpath($location);
   $banner_name = $form_state['values']['banner_name']; // the name of the banner file
   //$end_date = $form_state['values']['datetime'];
@@ -117,7 +117,7 @@ function new_banner_form_submit($form, &$form_state) {
 
 
     try {
-      $db_insert = db_insert('banner_details')
+      $db_insert = db_insert('fossee_banner_details')
         ->fields(array(
           'banner_name' => $banner_name,
           'file_name' => $file->filename,

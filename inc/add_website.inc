@@ -67,7 +67,7 @@ function add_website_form_submit($form, &$form_state) {
 
 
   try {
-    $db_insert = db_insert('website_index')
+    $db_insert = db_insert('fossee_website_index')
       ->fields(array(
         'site_name' => $domain,
       ))

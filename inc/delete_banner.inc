@@ -11,7 +11,7 @@ function delete_banner($id){
   $op_result = TRUE;
 
   /* fetching the filename of the banner file */
-  $file_name = db_select('banner_details','n')
+  $file_name = db_select('fossee_banner_details','n')
     ->fields('n',array('file_name'))
     ->range(0,1)
     ->condition('n.id',$id,'=')
@@ -19,8 +19,8 @@ function delete_banner($id){
     ->fetchCol();
 
 
-  /* deleting database entry in banner_details table */
-  $delete_row = db_delete('banner_details')
+  /* deleting database entry in fossee_banner_details table */
+  $delete_row = db_delete('fossee_banner_details')
     ->condition('id', $id, '=')
     ->execute();
 
@@ -31,7 +31,7 @@ function delete_banner($id){
   }
 
   /* checking if file was deleted*/
-  if(!file_unmanaged_delete(variable_get('banner_manager_banner_directory', "not found")."/".$file_name[0])){
+  if(!file_unmanaged_delete(variable_get('fossee_site_banner_banner_directory', "not found")."/".$file_name[0])){
     $op_result = FALSE;
   }
 

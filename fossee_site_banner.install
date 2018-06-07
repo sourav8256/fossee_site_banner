@@ -5,12 +5,12 @@
 *Implementation hook_schema
 */
 
-function banner_manager_schema(){
+function fossee_site_banner_schema(){
 
 
   /* creating banner_details table it contains details about the banner like banner name, banner file name,
   time till which banner will be shown etc */
-  $schema['banner_details'] = array(
+  $schema['fossee_banner_details'] = array(
     'description' => 'Table to store banner details',
     'fields' => array(
       'id' => array(
@@ -71,7 +71,7 @@ function banner_manager_schema(){
 
 
   /* contains the list of probable websites where the banner will be shown */
-  $schema['website_index'] = array(
+  $schema['fossee_website_index'] = array(
     'description' => 'TODO: please describe this table!',
     'fields' => array(
       'site_code' => array(
@@ -97,7 +97,7 @@ function banner_manager_schema(){
 }
 
 
-function banner_manager_install(){
+function fossee_site_banner_install(){
 
 }
 

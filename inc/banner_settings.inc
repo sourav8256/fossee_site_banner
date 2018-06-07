@@ -11,26 +11,26 @@ function banner_settings_form($form,&$form_state,$arg_banner_id){
 
   $base_url =  "http://".$_SERVER['SERVER_NAME'] . base_path();
 
-  drupal_add_js(array('banner_manager' => array('id' => $arg_banner_id, 'base_url' => $base_url)), array('type' => 'setting'));
-  drupal_add_js(drupal_get_path("module","banner_manager")."/js/main.js");
+  drupal_add_js(array('fossee_site_banner' => array('id' => $arg_banner_id, 'base_url' => $base_url)), array('type' => 'setting'));
+  drupal_add_js(drupal_get_path("module","fossee_site_banner")."/js/main.js");
   //$banner_dir = "public://site_banners/";
-  $banner_dir = variable_get('banner_manager_banner_directory', "not found");
+  $banner_dir = variable_get('fossee_site_banner_banner_directory', "not found");
 
   $realpath = file_create_url($banner_dir);
 
 
-  $result = getSitesList(); // fetches the list of sites from website_index table
+  $result = getSitesList(); // fetches the list of sites from fossee_website_index table
 
   /* getting the list of allowed sites saved as json */
 
-  $allowed_site_json = db_select('banner_details','n')
+  $allowed_site_json = db_select('fossee_banner_details','n')
     ->fields('n',array('allowed_sites'))
     ->range(0,1)
     ->condition('n.id',$arg_banner_id,'=')
     ->execute()
     ->fetchCol(); // fetches first column of teh result
 
-  $banner_filename = db_select('banner_details','n') // for fetching the banner filename
+  $banner_filename = db_select('fossee_banner_details','n') // for fetching the banner filename
   ->fields('n',array('file_name'))
     ->range(0,1)
     ->condition('n.id',$arg_banner_id,'=')
@@ -58,6 +58,10 @@ function banner_settings_form($form,&$form_state,$arg_banner_id){
     '#default_value' => $allowed_sites,
   );
 
+  $form['add_new_website'] = array(
+    '#prefix' => "<a href='../add_website'>Add New Websites</a>",
+  );
+
   $form['banner_id'] = array( // hidden field that stores the banner id received from the argument
     '#type' => 'hidden',
     '#value' => $arg_banner_id,
@@ -74,7 +78,7 @@ function banner_settings_form($form,&$form_state,$arg_banner_id){
   );
 
   $form['back'] = array(
-    '#prefix' => str_replace("url",$base_url."/banner_manager/banners","<button onclick='window.open(\"url\",\"_self\"); return false;' >Go Back</button>"),
+    '#prefix' => str_replace("url",$base_url."/fossee_site_banner/banners","<button onclick='window.open(\"url\",\"_self\"); return false;' >Go Back</button>"),
   );
 
   return $form;
@@ -82,13 +86,13 @@ function banner_settings_form($form,&$form_state,$arg_banner_id){
 
 }
 
-/* 
+/*
  * This function returns the lists of indexed sites from the table website index for use in function banner_settings_form
- * 
+ *
  */
 
 function getSitesList(){
-  $result = db_select('website_index','n')
+  $result = db_select('fossee_website_index','n')
     ->fields('n',array('site_code','site_name'))
     ->range(0,50)
     //->condition('n.uid',$uid,'=')
@@ -99,9 +103,9 @@ function getSitesList(){
 }
 
 
-/* 
- * This function currently submits the list of sites the banners  are allowed to be displayed in and saves it to the banner_details database as json
- * 
+/*
+ * This function currently submits the list of sites the banners  are allowed to be displayed in and saves it to the fossee_banner_details database as json
+ *
  */
 
 function banner_settings_form_submit($form,&$form_state){
@@ -111,13 +115,13 @@ function banner_settings_form_submit($form,&$form_state){
   $allowed_site_json = json_encode(array_filter($form_state['values']['sites'])); // converts array into json
 
 
-  $num_updated = db_update('banner_details')
+  $num_updated = db_update('fossee_banner_details')
     ->fields(array(
-      'allowed_sites' => $allowed_site_json, // field in banner_details table containing list of allowed sites as json string
+      'allowed_sites' => $allowed_site_json, // field in fossee_banner_details table containing list of allowed sites as json string
     ))
     ->condition('id', $banner_id, '=') // matches the banner id
     ->execute();
 
 
-  $form_state['redirect'] = $base_url."/banner_manager/banners";
+  $form_state['redirect'] = $base_url."/fossee_site_banner/banners";
 }

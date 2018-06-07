@@ -50,9 +50,9 @@ function banner_settings_form_validate($form, &$form_state){
 }
 
 function banner_settings_form_submit($form, &$form_state){
-  variable_set('banner_manager_max_file_size', $form_state['values']['file_size'] * 1024 * 1024);
-  variable_set('banner_manager_allowed_file_types', $form_state['values']['extensions']);
-  variable_set('banner_manager_banner_directory', $form_state['values']['banner_dir']);
+  variable_set('fossee_site_banner_max_file_size', $form_state['values']['file_size'] * 1024 * 1024);
+  variable_set('fossee_site_banner_allowed_file_types', $form_state['values']['extensions']);
+  variable_set('fossee_site_banner_banner_directory', $form_state['values']['banner_dir']);
   drupal_set_message(t('Settings updated'), 'status');
 }
 

@@ -2,8 +2,11 @@
 
 //$banner_folder = $path =  "http://".$_SERVER['SERVER_NAME'] . base_path() . 'sites/default/files/site_banners/';
 $site_name =trimDomain($_SERVER['SERVER_NAME'] . base_path());
+/*
+*banner_folder path has to be entered from the variables in fossee.in (it is the link to the directory in which banners are saved
+*/
 $banner_folder = "http://localhost/fossee/fossee_drupal/sites/default/files/site_banners/";
-$website_index = db_select('fossee_new.website_index','n')
+$website_index = db_select('fossee_new.fossee_website_index','n')
           ->fields('n',array('site_code'))
           ->range(0,1)
           ->condition('n.site_name',$site_name,'=')
@@ -12,7 +15,7 @@ $website_index = db_select('fossee_new.website_index','n')
 
 function getBannerFilesArray(){
 
-   $result = db_select('fossee_new.banner_details','n')
+   $result = db_select('fossee_new.fossee_banner_details','n')
           ->fields('n',array('id','file_name','status','status_bool','timestamp','allowed_sites'))
           ->range(0,20)
           //->condition('n.uid',$uid,'=')

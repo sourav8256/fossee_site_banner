@@ -3,4 +3,4 @@ package = User interface
 core = "7.x"
 description = "A custom module to manage banners."
 version = 7.x
-name = "Banner Manager"
+name = "Fossee Site Banner"
