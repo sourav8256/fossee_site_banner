@@ -127,7 +127,7 @@ function new_banner_form_submit($form, &$form_state) {
         ))
         ->execute();
     } catch (Exception $e) {
-      drupal_set_message("Sorry Banner has not been created due to some unknown database error!");
+      drupal_set_message("Sorry Banner has not been created due to some unknown database error!".$e);
       return;
     }
 
