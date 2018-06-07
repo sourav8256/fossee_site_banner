@@ -29,6 +29,12 @@ function banner_manager_schema(){
         'size' => 'big',
         'not null' => FALSE,
       ),
+      'last_updated' => array(
+        'description' => 'TODO: please describe this field!',
+        'type' => 'float',
+        'size' => 'big',
+        'not null' => TRUE,
+      ),
       'created_timestamp' => array(
         'description' => 'TODO: please describe this field!',
         'type' => 'float',
@@ -62,6 +68,7 @@ function banner_manager_schema(){
     ),
     'primary key' => array('id'),
   );
+
 
   /* contains the list of probable websites where the banner will be shown */
   $schema['website_index'] = array(
