@@ -3,7 +3,7 @@
 //$banner_folder = $path =  "http://".$_SERVER['SERVER_NAME'] . base_path() . 'sites/default/files/site_banners/';
 $site_name =trimDomain($_SERVER['SERVER_NAME'] . base_path());
 /*
-*banner_folder path has to be entered from the variables in fossee.in (it is the link to the directory in which banners are saved
+*banner_folder path stores the path to the directory in which banners are stored.
 */
 $banner_folder = "http://localhost/fossee/fossee_drupal/sites/default/files/site_banners/";
 $website_index = db_select('fossee_new.fossee_website_index','n')
@@ -38,8 +38,6 @@ echo   '
 <link rel="stylesheet" type="text/css" href="https://fossee.in/data/banner/css/nice-bar.css" />     
           <link rel="stylesheet" type="text/css" href="https://fossee.in/data/banner/css/lightbox.css" /> 
      <script type="text/javascript" src="https://fossee.in/data/banner/js/nice-bar.js"></script>
-    
-          
 ';
 
 // common part ends
@@ -65,9 +63,15 @@ $array_banner_href .= "\"".$res->banner_href."\",";
 }
 
 }
-//echo $array_string;
 
-echo '<a class="nice-text" id="banner_link" href="#" target="_blank" >  <img id="banner" src=""> </a>';
+/* checking if array_string is empty so that empty/broken image is not displayed */
+if(!empty($array_string)){
+    echo '<a class="nice-text" id="banner_link" href="#" target="_blank" >  <img id="banner" src=""> </a>';
+}
+
+
+
+/* javascript to change the banner image after regular interval */
 
 echo "
 <script>
