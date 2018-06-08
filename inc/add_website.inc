@@ -25,8 +25,8 @@ function add_website_form($form, &$form_state) {
     );*/
 
   $form['ajax_container'] = array(
-    //'#type'   => 'fieldset',
-    '#title'  => t("Dynamic fields"),
+    '#type'   => 'fieldset',
+    '#title'  => t(""),
     //'#weight' => $form['body']['#weight'] + 1,
     '#prefix' => '<div id="ajax_wrapper">',
     '#suffix' => '</div>'
@@ -41,6 +41,7 @@ function add_website_form($form, &$form_state) {
   for ($i=0;$i<$num;$i++) {
     $form['ajax_container']['id'.$i] = array(
       '#type' => 'textfield',
+      '#tree' => TRUE,
       //'#required' => TRUE,
       '#title' => t('Website Domain : <br/>'),
       '#size' => 10,
@@ -51,23 +52,25 @@ function add_website_form($form, &$form_state) {
   $form['ajax_container']['add_field'] = array(
     '#type'   => 'submit',
     '#value'  => t('Add new field'),
-    '#submit' => array('my_module_ajax_add_field_submit'),
+    '#submit' => array('my_module_ajax_add_field'),
     '#ajax'   => array(
       'callback'=> 'my_module_ajax_callback',
       'wrapper' => 'ajax_wrapper',
       'effect'  => 'fade',
-    )
+    ),
+    '#name' => 'website_field_add_button',
   );
 
   $form['ajax_container']['remove_field'] = array(
     '#type'   => 'submit',
     '#value'  => t('Remove a field'),
-    '#submit' => array('my_module_ajax_remove_field_submit'),
+    '#submit' => array('my_module_ajax_remove_field'),
     '#ajax'   => array(
       'callback'=> 'my_module_ajax_callback',
       'wrapper' => 'ajax_wrapper',
       'effect'  => 'fade',
-    )
+    ),
+    '#name' => 'website_field_remove_button',
   );
 
   $form['upload_submit'] = array(
@@ -84,12 +87,13 @@ function add_website_form($form, &$form_state) {
 
 }
 
-function my_module_ajax_add_field_submit($form, &$form_state) {
+
+function my_module_ajax_add_field($form, &$form_state) {
   $form_state['n_items']++;
   $form_state['rebuild'] = TRUE;
 }
 
-function my_module_ajax_remove_field_submit($form, &$form_state) {
+function my_module_ajax_remove_field($form, &$form_state) {
   $form_state['n_items']--;
   $form_state['rebuild'] = TRUE;
 }
@@ -131,6 +135,7 @@ function add_website_form_validate($form,&$form_state){
   for($i=0;$i<$no_of_fields;$i++){
     $site_name = $form_state['values']['id'.$i];
 
+    if(($form_state['triggering_element']['#name'] == 'website_field_add_button') || ($form_state['triggering_element']['#name'] == 'website_field_remove_button')){continue;};
     //if(empty($site_name)){continue;}
 
     if (filter_var($site_name, FILTER_VALIDATE_URL)) {
