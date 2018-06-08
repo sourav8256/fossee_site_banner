@@ -223,7 +223,7 @@ function setFrontend(){
 	function setBannerInctiveAjaxCall(param){
 		console.log(new Date().getTime());
 		console.log(\"".$base_url."fossee_drupal/fossee-site-banner/set-banner-inactive/\"+param.id+'/arg'+Math.random());
-		$.get(\"http://localhost/fossee/fossee_drupal/fossee-site-banner/set-banner-inactive/\"+param.id+'/arg'+Math.random()).success(function(data){ 
+		$.get(\"".$base_url."fossee-site-banner/set-banner-inactive/\"+param.id+'/arg'+Math.random()).success(function(data){ 
 			if(data.result == 'success'){
 				setBannerUnselected(data.data);
 			}
