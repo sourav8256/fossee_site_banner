@@ -21,9 +21,18 @@ function new_banner_form($form, &$form_state) {
     '#title' => t('Banner Name : <br/>'),
     '#size' => 10,
     '#prefix' => '<br/><br/>',
-    '#suffix' => '<br/><br/>',
+    '#suffix' => '',
   );
 
+  $form['banner_href'] = array(
+    '#type' => 'textfield',
+    '#required' => TRUE,
+    '#title' => t('Banner Redirect Url : <br/>'),
+    '#description' => t('The url to open when the banner is clicked'),
+    '#size' => 10,
+    '#prefix' => '<br/><br/>',
+    '#suffix' => '<br/><br/>',
+  );
 
   $form['date'] = array(
     '#prefix'=>t('<br/><br/>'),
@@ -51,7 +60,7 @@ function new_banner_form($form, &$form_state) {
     '#type' => 'button',
     '#value' => t('See Available Banners'),
     '#attributes' => array(
-      'onclick' => 'window.open(\''.$path.'fossee_site_banner/banners'.'\',"_self"); return false;',
+      'onclick' => 'window.open(\''.$path.'fossee-site-banner/banners'.'\',"_self"); return false;',
     ),
 
   );
@@ -69,8 +78,19 @@ function new_banner_form($form, &$form_state) {
 function new_banner_form_validate($form,&$form_state){
   $end_date = strtotime($form_state['values']['date']." 23:59:59"); // the date when the banner has to stop displaying
   $timestamp = strtotime($form_state['values']['date']); // converts time string from form to timestamp to be saved in database
-  if(time()>$timestamp){
+  if(time()>$timestamp){ //checking if banner validity is before today's date
     form_set_error("date","Sorry! you can't give a date before today's date!");
+  }
+
+
+  /*
+   * Validating banner redirect url using inbuilt php function filter_var
+   * */
+  $url = $form_state['values']['banner_href'];
+  if (filter_var($url, FILTER_VALIDATE_URL)) {
+
+  } else {
+    form_set_error("banner_href","The Banner Redirect Url is invalid please give a valid url including http:// or https://");
   }
 
 }
@@ -91,6 +111,7 @@ function new_banner_form_submit($form, &$form_state) {
   $location = variable_get('fossee_site_banner_banner_directory', "not found");
   $real_path = drupal_realpath($location);
   $banner_name = $form_state['values']['banner_name']; // the name of the banner file
+  $banner_href = $form_state['values']['banner_href'];
   //$end_date = $form_state['values']['datetime'];
   $end_date = strtotime($form_state['values']['date']." 23:59:59"); // the date when the banner has to stop displaying
   //$banner_name = $form_state['values']['banner_name']; // The name of the banner as set by the user
@@ -124,6 +145,7 @@ function new_banner_form_submit($form, &$form_state) {
           'timestamp' => $timestamp,
           'created_timestamp' => $created_timestamp,
           'last_updated' => $created_timestamp,
+          'banner_href' => $banner_href,
         ))
         ->execute();
     } catch (Exception $e) {
@@ -136,7 +158,9 @@ function new_banner_form_submit($form, &$form_state) {
 
       drupal_set_message("File Successfully Uploaded : " . $file->filename);
       drupal_set_message('Banner Name : ' . $banner_name);
-      drupal_set_message('End Date : ' . $end_date);
+      drupal_set_message('End Date : ' . date('Y-m-d H:i:s', $end_date));
+
+      drupal_goto("banners",array('external' => TRUE));
 
     } else {
       drupal_set_message("Sorry Banner Is Not Created For Some Reason!");

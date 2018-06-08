@@ -35,8 +35,8 @@ function fossee_site_banner_banners(){
     ->condition('n.status_bool',1,'!=')
     //->condition('n.created_timestamp',time()-$recent_time,'<=')
     ->execute(); // returns the banners from the fossee_banner_details table
-  // Open a directory, and read its contents
 
+  $output .= "<a href='new-banner'>Create New Banner</a><br><br>";
   $output .= generateTable($result_recent,"Recent");
   $output .= generateTable($result_active,"Active");
   $output .= generateTable($result_inactive,"Inactive");
@@ -61,13 +61,16 @@ function getFilesArray(){
   return $result;
 }
 
-
+/*
+ * This function is used to generate tables of banners in different groups
+ *
+ */
 function generateTable($results,$table_title){
 
   $dir = variable_get('fossee_site_banner_banner_directory', "not found");
-  $path =  site_banners_path(); // path to the folder containing the banner files
+  //$path =  site_banners_path(); // path to the folder containing the banner files
   $realpath = file_create_url($dir); //
-  $settings_form_link = $path =  "http://".$_SERVER['SERVER_NAME'] . base_path() . 'fossee_site_banner/banner_settings/';
+  $settings_form_link = $path =  "http://".$_SERVER['SERVER_NAME'] . base_path() . 'fossee-site-banner/banner-settings/';
   $col_length = 3; // The number of columns in the table in which banners are displayed
   $i=0;
   $banners = array();
@@ -154,7 +157,7 @@ function generateTable($results,$table_title){
 
 function setFrontend(){
 
-
+  $base_url = "http://".$_SERVER['SERVER_NAME'] . base_path();
   $res = getFilesArray();
 
   $style = ".imgStyle
@@ -201,8 +204,8 @@ function setFrontend(){
 
 	function setBannerActiveAjaxCall(param){
 		console.log(new Date().getTime());
-		console.log(\"http://localhost/fossee/fossee_drupal/fossee_site_banner/set_banner_active/\"+param.id+'/arg'+Math.random());
-		$.get(\"http://localhost/fossee/fossee_drupal/fossee_site_banner/set_banner_active/\"+param.id+'/arg'+Math.random()).success(function(data){ 
+		console.log(\"http://localhost/fossee/fossee_drupal/fossee-site-banner/set-banner-active/\"+param.id+'/arg'+Math.random());
+		$.get(\"".$base_url."fossee-site-banner/set-banner-active/\"+param.id+'/arg'+Math.random()).success(function(data){ 
 			if(data.result == 'success'){
 				setBannerSelected(data.data);
 			}
@@ -219,8 +222,8 @@ function setFrontend(){
 
 	function setBannerInctiveAjaxCall(param){
 		console.log(new Date().getTime());
-		console.log(\"http://localhost/fossee/fossee_drupal/fossee_site_banner/set_banner_inactive/\"+param.id+'/arg'+Math.random());
-		$.get(\"http://localhost/fossee/fossee_drupal/fossee_site_banner/set_banner_inactive/\"+param.id+'/arg'+Math.random()).success(function(data){ 
+		console.log(\"".$base_url."fossee_drupal/fossee-site-banner/set-banner-inactive/\"+param.id+'/arg'+Math.random());
+		$.get(\"http://localhost/fossee/fossee_drupal/fossee-site-banner/set-banner-inactive/\"+param.id+'/arg'+Math.random()).success(function(data){ 
 			if(data.result == 'success'){
 				setBannerUnselected(data.data);
 			}
@@ -257,13 +260,13 @@ function setFrontend(){
 
 
 
-function site_banners_path() { // returns the file location as a directory path
+/*function site_banners_path() { // returns the file location as a directory path
   $path =  $_SERVER['DOCUMENT_ROOT'] . base_path() . 'site_banners';
   return $path;
-}
+}*/
 
-function site_banners_url() { // returns the file path as an url
+/*function site_banners_url() { // returns the file path as an url
   //$path =  $_SERVER['DOCUMENT_ROOT'] . base_path() . 'site_banners';
   $path =  "http://".$_SERVER['SERVER_NAME'] . base_path() . 'site_banners/';
   return $path;
-}
+}*/

@@ -16,7 +16,7 @@ $website_index = db_select('fossee_new.fossee_website_index','n')
 function getBannerFilesArray(){
 
    $result = db_select('fossee_new.fossee_banner_details','n')
-          ->fields('n',array('id','file_name','status','status_bool','timestamp','allowed_sites'))
+          ->fields('n',array('id','file_name','status','status_bool','timestamp','allowed_sites','banner_href'))
           ->range(0,20)
           //->condition('n.uid',$uid,'=')
           ->execute();
@@ -59,6 +59,7 @@ $allowed_sites = json_decode($json,true);
 if((date('Y-m-d H:i:s', $res->timestamp) >  $today) && isset( $allowed_sites[$website_index[0]] ) && $res->status_bool==1){
 
 $array_string .= "\"".$res->file_name."\",";
+$array_banner_href .= "\"".$res->banner_href."\",";
 //echo '<a class="nice-text" href="'.$banner_folder.$res->file_name.'" target="_blank" >  <img src="'.$banner_folder.$res->file_name.'"> </a>'; 
 
 }
@@ -66,13 +67,18 @@ $array_string .= "\"".$res->file_name."\",";
 }
 //echo $array_string;
 
-echo '<a class="nice-text"  href="#" target="_blank" >  <img id="banner" src=""> </a>';
+echo '<a class="nice-text" id="banner_link" href="#" target="_blank" >  <img id="banner" src=""> </a>';
 
 echo "
 <script>
-var banner_holder= document.getElementById(\"banner\");
+var banner_holder = document.getElementById(\"banner\");
+var bannerLinkHolder = document.getElementById(\"banner_link\");
 var banners = [
 ".$array_string."
+];
+
+var banner_hrefs = [
+".$array_banner_href."
 ];
 
 console.log(banners);
@@ -80,6 +86,7 @@ var i = 0;
 function change(){
   if(i>=banners.length){i=0};
     banner_holder.src= '".$banner_folder."'+banners[i];
+    bannerLinkHolder.href = banner_hrefs[i];
         i++;
 }
 

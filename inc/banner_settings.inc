@@ -59,7 +59,7 @@ function banner_settings_form($form,&$form_state,$arg_banner_id){
   );
 
   $form['add_new_website'] = array(
-    '#prefix' => "<a href='../add_website'>Add New Websites</a>",
+    '#prefix' => "<a href='../add-website'>Add New Websites</a>",
   );
 
   $form['banner_id'] = array( // hidden field that stores the banner id received from the argument
@@ -78,7 +78,7 @@ function banner_settings_form($form,&$form_state,$arg_banner_id){
   );
 
   $form['back'] = array(
-    '#prefix' => str_replace("url",$base_url."/fossee_site_banner/banners","<button onclick='window.open(\"url\",\"_self\"); return false;' >Go Back</button>"),
+    '#prefix' => str_replace("url",$base_url."/fossee-site-banner/banners","<button onclick='window.open(\"url\",\"_self\"); return false;' >Go Back</button>"),
   );
 
   return $form;
@@ -123,5 +123,5 @@ function banner_settings_form_submit($form,&$form_state){
     ->execute();
 
 
-  $form_state['redirect'] = $base_url."/fossee_site_banner/banners";
+  $form_state['redirect'] = $base_url."/fossee-site-banner/banners";
 }

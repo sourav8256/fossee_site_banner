@@ -17,7 +17,7 @@ function banner_settings_form($form,&$form_state){
     '#size' => 50,
     '#maxlength' => 255,
     '#required' => TRUE,
-    '#default_value' => variable_get('banner_manager_max_file_size', '')/(1024 * 1024),
+    '#default_value' => variable_get('fossee_site_banner_max_file_size', '')/(1024 * 1024),
   );
   $form['extensions'] = array(
     '#type' => 'textfield',
@@ -26,7 +26,7 @@ function banner_settings_form($form,&$form_state){
     '#size' => 50,
     '#maxlength' => 255,
     '#required' => TRUE,
-    '#default_value' => variable_get('banner_manager_allowed_file_types', ''),
+    '#default_value' => variable_get('fossee_site_banner_allowed_file_types', ''),
   );
   $form['banner_dir'] = array(
     '#type' => 'textfield',
@@ -35,7 +35,7 @@ function banner_settings_form($form,&$form_state){
     '#size' => 50,
     '#maxlength' => 255,
     '#required' => TRUE,
-    '#default_value' => variable_get('banner_manager_banner_directory', ''),
+    '#default_value' => variable_get('fossee_site_banner_banner_directory', ''),
   );
 
   $form['submit'] = array(
@@ -50,9 +50,19 @@ function banner_settings_form_validate($form, &$form_state){
 }
 
 function banner_settings_form_submit($form, &$form_state){
+  $banner_dir = $form_state['values']['banner_dir'];
+
   variable_set('fossee_site_banner_max_file_size', $form_state['values']['file_size'] * 1024 * 1024);
   variable_set('fossee_site_banner_allowed_file_types', $form_state['values']['extensions']);
-  variable_set('fossee_site_banner_banner_directory', $form_state['values']['banner_dir']);
   drupal_set_message(t('Settings updated'), 'status');
+  if (!is_dir($banner_dir)) {
+    if (drupal_mkdir($banner_dir, NULL, TRUE, NULL)) {
+      variable_set('fossee_site_banner_banner_directory', $form_state['values']['banner_dir']);
+    } else {
+      drupal_set_message(t("Failure : could not create directory"), "error");
+    }
+  } else {
+    variable_set('fossee_site_banner_banner_directory', $form_state['values']['banner_dir']);
+  }
 }
 

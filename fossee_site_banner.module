@@ -43,6 +43,10 @@ function fossee_site_banner_permission(){
       "title" => t("Delete Banner"),
       "description" => t("Allows user to delete banners permanently"),
     ),
+    "delete website" => array(
+      "title" => t("Delete Website"),
+      "description" => t("Allows user to delete websites from the list of available websites"),
+    ),
     "administer banners" => array(
       "title" => t("Administer Banners"),
       "description" => t("Allows users to manage settings like banner file size, extensions etc")
@@ -61,7 +65,7 @@ function fossee_site_banner_permission(){
 function fossee_site_banner_menu() {
 	$items = array();
 
-	$items['fossee_site_banner/new_banner'] = array( // used to create new banners
+	$items['fossee-site-banner/new-banner'] = array( // used to create new banners
 		'title' => 'New Banner',
 		'description' => 'Create New Banner.',
 		'page callback' => 'drupal_get_form',
@@ -71,7 +75,7 @@ function fossee_site_banner_menu() {
 	);
 
 
-	$items['fossee_site_banner/banners'] = array( // shows all available banners and if they are active/inactive
+	$items['fossee-site-banner/banners'] = array( // shows all available banners and if they are active/inactive
 		'title' => 'Available Banners',
 		'description' => 'The Banners Available.',
 		'page callback' => 'fossee_site_banner_banners',
@@ -81,7 +85,7 @@ function fossee_site_banner_menu() {
 	);
 
 
-	$items['fossee_site_banner/set_banner_active/%'] = array( // receives ajax call to set a banner active with an argument containing the id of the banner
+	$items['fossee-site-banner/set-banner-active/%'] = array( // receives ajax call to set a banner active with an argument containing the id of the banner
 		'page callback' => 'set_banner_active',
 		'type' => MENU_CALLBACK,
 		'access arguments' => array('set banner status'),
@@ -90,7 +94,7 @@ function fossee_site_banner_menu() {
 	);
 
 
-	$items['fossee_site_banner/set_banner_inactive/%'] = array( // receives ajax call to set a banner inactive with an argument containing the id of the banner
+	$items['fossee-site-banner/set-banner-inactive/%'] = array( // receives ajax call to set a banner inactive with an argument containing the id of the banner
 		'page callback' => 'set_banner_inactive',
 		'type' => MENU_CALLBACK,
 		'access arguments' => array('set banner status'),
@@ -99,7 +103,7 @@ function fossee_site_banner_menu() {
 	);
 
 
-	$items['fossee_site_banner/banner_settings/%'] = array( // used to change settings like the sites where the banner will be displayed
+	$items['fossee-site-banner/banner-settings/%'] = array( // used to change settings like the sites where the banner will be displayed
 		'title' => 'Banner Settings',
 		'description' => 'Create New Banner.',
 		'page callback' => 'drupal_get_form',
@@ -108,21 +112,31 @@ function fossee_site_banner_menu() {
 		'file' => 'inc/banner_settings.inc',
 	);
 
-  $items['fossee_site_banner/add_website'] = array( // used to add new websites to the list of sites where banner will be displayed
+  $items['fossee-site-banner/add-website'] = array( // used to add new websites to the list of sites where banner will be displayed
     'title' => 'Add Websites',
     'description' => 'Add new website.',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('add_website_form'),
+    'page arguments' => array(
+      'add_website_form',
+    ),
     'access arguments' => array('add website'),
     'file' => 'inc/add_website.inc',
   );
 
-  $items['fossee_site_banner/delete_banner/%'] = array( // receives ajax call to set a banner active with an argument containing the id of the banner
+  $items['fossee-site-banner/delete-banner/%'] = array( // receives ajax call to set a banner active with an argument containing the id of the banner
     'page callback' => 'delete_banner',
     'type' => MENU_CALLBACK,
     'access arguments' => array('delete banner'),
     'page arguments' => array(2),
     'file' => 'inc/delete_banner.inc',
+  );
+
+  $items['fossee-site-banner/delete-website/%'] = array( // receives ajax call to set a banner active with an argument containing the id of the banner
+    'page callback' => 'delete_website',
+    'type' => MENU_CALLBACK,
+    'access arguments' => array('delete website'),
+    'page arguments' => array(2),
+    'file' => 'inc/delete_website.inc',
   );
 
   /* ADMIN SETTINGS */

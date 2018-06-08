@@ -60,6 +60,11 @@ function fossee_site_banner_schema(){
         'type' => 'text',
         'not null' => TRUE,
       ),
+      'banner_href' => array(
+        'description' => 'TODO: please describe this field!',
+        'type' => 'text',
+        'not null' => TRUE,
+      ),
       'allowed_sites' => array(
         'description' => 'TODO: please describe this field!',
         'type' => 'text',
@@ -68,6 +73,7 @@ function fossee_site_banner_schema(){
     ),
     'primary key' => array('id'),
   );
+
 
 
   /* contains the list of probable websites where the banner will be shown */
