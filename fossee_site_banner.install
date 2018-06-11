@@ -98,6 +98,32 @@ function fossee_site_banner_schema(){
     ),
   );
 
+  /**
+   * this table in fossee_new database contains variables which can be accessed by other websites
+   */
+  $schema['fossee_site_banner_variables'] = array(
+    'description' => 'TODO: please describe this table!',
+    'fields' => array(
+      'id' => array(
+        'description' => 'TODO: please describe this field!',
+        'type' => 'serial',
+        'not null' => TRUE,
+      ),
+      'name' => array(
+        'description' => 'TODO: please describe this field!',
+        'type' => 'text',
+        'not null' => TRUE,
+      ),
+      'value' => array(
+        'description' => 'TODO: please describe this field!',
+        'type' => 'text',
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('id'),
+  );
+  
+
 
   return $schema;
 }

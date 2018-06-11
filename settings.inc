@@ -38,6 +38,24 @@ function banner_settings_form($form,&$form_state){
     '#default_value' => variable_get('fossee_site_banner_banner_directory', ''),
   );
 
+  $res_banner_dir = db_select('fossee_new.fossee_site_banner_variables','n')
+          ->fields('n',array('value'))
+          ->range(0,1)
+          ->condition('n.name','banner_dir','=')
+          ->execute()
+          ->fetchCol();
+  $banner_folder = $res_banner_dir[0];
+
+  $form['banner_url'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Banner Directory Url(without trailing "/")'),
+    '#description' => t('Url to the directory where banners are stored(without trailing "/")'),
+    '#size' => 50,
+    '#maxlength' => 255,
+    '#required' => TRUE,
+    '#default_value' => $banner_folder,
+  );
+
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Submit')
@@ -51,6 +69,7 @@ function banner_settings_form_validate($form, &$form_state){
 
 function banner_settings_form_submit($form, &$form_state){
   $banner_dir = $form_state['values']['banner_dir'];
+  $banner_url = $form_state['values']['banner_url'];
 
   variable_set('fossee_site_banner_max_file_size', $form_state['values']['file_size'] * 1024 * 1024);
   variable_set('fossee_site_banner_allowed_file_types', $form_state['values']['extensions']);
@@ -64,5 +83,23 @@ function banner_settings_form_submit($form, &$form_state){
   } else {
     variable_set('fossee_site_banner_banner_directory', $form_state['values']['banner_dir']);
   }
+
+  $db_update = db_update('fossee_site_banner_variables')
+  ->fields(array(
+    'value' => $banner_url,
+  ))
+  ->condition("name","banner_dir","=")
+  ->execute();
+
+  if($db_update == 0){
+    $db_insert = db_insert('fossee_site_banner_variables')
+        ->fields(array(
+          'name' => 'banner_dir',
+          'value' => $banner_url,
+        ))
+        ->execute();
+  }
+
+
 }
 

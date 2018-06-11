@@ -2,10 +2,15 @@
 
 //$banner_folder = $path =  "http://".$_SERVER['SERVER_NAME'] . base_path() . 'sites/default/files/site_banners/';
 $site_name =trimDomain($_SERVER['SERVER_NAME'] . base_path());
-/*
-*banner_folder path stores the path to the directory in which banners are stored.
-*/
-$banner_folder = "http://localhost/fossee/fossee_drupal/sites/default/files/site_banners/";
+
+$res_banner_dir = db_select('fossee_new.fossee_site_banner_variables','n')
+          ->fields('n',array('value'))
+          ->range(0,1)
+          ->condition('n.name','banner_dir','=')
+          ->execute()
+          ->fetchCol();
+$banner_folder = $res_banner_dir[0];
+
 $website_index = db_select('fossee_new.fossee_website_index','n')
           ->fields('n',array('site_code'))
           ->range(0,1)
@@ -51,14 +56,14 @@ $today = date("Y-m-d H:i:s");
 foreach ($results as $res) {
   # code...
 
-$json = $res->allowed_sites;
-$allowed_sites = json_decode($json,true);
-//$array_string = "";
-if((date('Y-m-d H:i:s', $res->timestamp) >  $today) && isset( $allowed_sites[$website_index[0]] ) && $res->status_bool==1){
+  $json = $res->allowed_sites;
+  $allowed_sites = json_decode($json,true);
+  //$array_string = "";
+  if((date('Y-m-d H:i:s', $res->timestamp) >  $today) && isset( $allowed_sites[$website_index[0]] ) && $res->status_bool==1){
 
-$array_string .= "\"".$res->file_name."\",";
-$array_banner_href .= "\"".$res->banner_href."\",";
-//echo '<a class="nice-text" href="'.$banner_folder.$res->file_name.'" target="_blank" >  <img src="'.$banner_folder.$res->file_name.'"> </a>'; 
+  $array_string .= "\"".$res->file_name."\",";
+  $array_banner_href .= "\"".$res->banner_href."\",";
+  //echo '<a class="nice-text" href="'.$banner_folder.$res->file_name.'" target="_blank" >  <img src="'.$banner_folder.$res->file_name.'"> </a>'; 
 
 }
 
@@ -89,9 +94,9 @@ console.log(banners);
 var i = 0;
 function change(){
   if(i>=banners.length){i=0};
-    banner_holder.src= '".$banner_folder."'+banners[i];
+    banner_holder.src= '".$banner_folder."/'+banners[i];
     bannerLinkHolder.href = banner_hrefs[i];
-        i++;
+    i++;
 }
 
 change();

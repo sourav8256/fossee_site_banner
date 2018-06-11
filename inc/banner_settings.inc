@@ -58,6 +58,11 @@ function banner_settings_form($form,&$form_state,$arg_banner_id){
     '#default_value' => $allowed_sites,
   );
 
+
+  $form['edit_banner'] = array(
+    '#markup' => '<a href="../edit-banner/'.$arg_banner_id.'">Edit Banner</a><br><br>',
+  );
+
   $form['add_new_website'] = array(
     '#prefix' => "<a href='../add-website'>Add New Websites</a>",
   );

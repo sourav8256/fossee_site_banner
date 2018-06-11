@@ -12,7 +12,6 @@ function fossee_site_banner_banners(){
   $output = NULL;
 
   setFrontend(); // this function renders the fromtend like rendering javascript and css style
-
   $recent_time = 1*24*60*60; // D * H * MIN * SEC
 
   $result_recent = db_select('fossee_banner_details','n')
@@ -203,8 +202,6 @@ function setFrontend(){
 	}
 
 	function setBannerActiveAjaxCall(param){
-		console.log(new Date().getTime());
-		console.log(\"http://localhost/fossee/fossee_drupal/fossee-site-banner/set-banner-active/\"+param.id+'/arg'+Math.random());
 		$.get(\"".$base_url."fossee-site-banner/set-banner-active/\"+param.id+'/arg'+Math.random()).success(function(data){ 
 			if(data.result == 'success'){
 				setBannerSelected(data.data);
@@ -221,8 +218,6 @@ function setFrontend(){
 	}
 
 	function setBannerInctiveAjaxCall(param){
-		console.log(new Date().getTime());
-		console.log(\"".$base_url."fossee_drupal/fossee-site-banner/set-banner-inactive/\"+param.id+'/arg'+Math.random());
 		$.get(\"".$base_url."fossee-site-banner/set-banner-inactive/\"+param.id+'/arg'+Math.random()).success(function(data){ 
 			if(data.result == 'success'){
 				setBannerUnselected(data.data);

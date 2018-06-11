@@ -74,6 +74,14 @@ function fossee_site_banner_menu() {
 		'file' => 'inc/new_banner.inc',
 	);
 
+	$items['fossee-site-banner/edit-banner'] = array( // used to create new banners
+		'title' => 'Edit Banner',
+		'description' => 'Edit the banner details.',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('new_edit_banner_form',2),
+		'access arguments' => array("create new_banner"),
+		'file' => 'inc/edit_banner.inc',
+	);
 
 	$items['fossee-site-banner/banners'] = array( // shows all available banners and if they are active/inactive
 		'title' => 'Available Banners',
@@ -137,6 +145,14 @@ function fossee_site_banner_menu() {
     'access arguments' => array('delete website'),
     'page arguments' => array(2),
     'file' => 'inc/delete_website.inc',
+	);
+	
+	$items['fossee-site-banner/edit-website/%'] = array( // receives ajax call to set a banner active with an argument containing the id of the banner
+    'page callback' => 'drupal_get_form',
+    'type' => MENU_CALLBACK,
+    'access arguments' => array('delete website'),
+    'page arguments' => array('edit_website_form',2),
+    'file' => 'inc/edit_website.inc',
   );
 
   /* ADMIN SETTINGS */

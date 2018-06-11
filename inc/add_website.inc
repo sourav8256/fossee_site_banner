@@ -82,17 +82,26 @@ function add_website_form($form, &$form_state) {
     '#markup' => '<button onclick="window.open(\'banners\',\'_self\'); return false;">All Banners</button>',
   );
 
-
+  doThis($this);
   return $form;
 
 }
 
+function doThis(){
 
+}
+
+/**
+ * This function is called by add_field button to add new website field
+ */
 function my_module_ajax_add_field($form, &$form_state) {
   $form_state['n_items']++;
   $form_state['rebuild'] = TRUE;
 }
 
+/**
+ * this function is called by
+ */
 function my_module_ajax_remove_field($form, &$form_state) {
   $form_state['n_items']--;
   $form_state['rebuild'] = TRUE;
@@ -110,12 +119,13 @@ function generateWebsitesTable(){
 
   foreach ($banners as $banner){
     $col1 = $banner->site_name;
-    $col2 = "<a href='".$base_url."fossee-site-banner/delete-website/".$banner->site_code."'>Delete</a>";
-    $rows[] = array($col1,$col2);
+    $col2 = "<a href='".$base_url."fossee-site-banner/edit-website/".$banner->site_code."'>Edit</a>";
+    $col3 = "<a href='".$base_url."fossee-site-banner/delete-website/".$banner->site_code."'>Delete</a>";
+    $rows[] = array($col1,$col2,$col3);
     //$rows[] = array("key ","value ");
   }
 
-  $header = array("Available Websites","");
+  $header = array("Available Websites","","");
   $output = theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('id' => 'sort-table')));
   $output .= theme('pager');
 
