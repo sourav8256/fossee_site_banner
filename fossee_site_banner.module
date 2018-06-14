@@ -175,5 +175,30 @@ function fossee_site_banner_menu() {
 }
 
 
+function fossee_site_banner_cron(){
+
+  dpm('module_load_include ',module_load_include('inc','fossee_site_banner','inc/mail'));
+  module_load_include('inc','fossee_site_banner','inc/mail');
+  $domain_name = "http://".$_SERVER['SERVER_NAME'] . base_path();
+
+  $time_range = 7*24*60*60;
+  $result = db_select('fossee_banner_details','n')
+    ->fields('n',array('id','file_name','status','banner_name'))
+    //->range(0,20)
+    //->condition(db_or()->condition('n.created_timestamp',time()-$recent_time,'>')->condition('n.last_updated',time()-$recent_time))
+    ->condition('n.timestamp',time()+$time_range,"<")
+    ->execute(); // returns the banners from the fossee_banner_details table
+
+  foreach ($result as $res){
+    $banner_link = $domain_name."fossee-site-banner/banner-settings/".$res->id;
+    $params['banners'] .= t('<br><a href="'.$banner_link.'">'.$res->banner_name.'</a>');
+  }
+
+  $params['to'] = variable_get('fossee_site_banner_banner_admin',NULL);
+  drupal_mail('fossee_site_banner','banner_validity_reminder',language_default(),variable_get('fossee_site_banner_banner_admin',NULL));
+
+}
+
+
 
 

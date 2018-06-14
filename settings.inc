@@ -9,6 +9,18 @@
 
 function banner_settings_form($form,&$form_state){
 
+  module_load_include('inc','fossee_site_banner','inc/db_schema');
+
+  $form['banner_admin'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Email of the Banner administrator'),
+    '#description' => t('Necessary emails related to banners will be sent to the email.'),
+    '#size' => 50,
+    '#maxlength' => 255,
+    '#required' => TRUE,
+    '#default_value' => variable_get('fossee_site_banner_banner_admin', ''),
+  );
+
   $form['file_size'] = array(
     '#type' => 'textfield',
     '#title' => t('Maximum file size allowed for upload (in MBs)'),
@@ -38,12 +50,16 @@ function banner_settings_form($form,&$form_state){
     '#default_value' => variable_get('fossee_site_banner_banner_directory', ''),
   );
 
-  $res_banner_dir = db_select('fossee_new.fossee_site_banner_variables','n')
-          ->fields('n',array('value'))
-          ->range(0,1)
-          ->condition('n.name','banner_dir','=')
-          ->execute()
-          ->fetchCol();
+  try {
+    $res_banner_dir = db_select('fossee_new.fossee_site_banner_variables', 'n')
+      ->fields('n', array('value'))
+      ->range(0, 1)
+      ->condition('n.name', 'banner_dir', '=')
+      ->execute()
+      ->fetchCol();
+  } catch (Exception $e) {
+    drupal_set_message("'fossee_site_banner_variables' table not found please update the tables","error");
+  }
   $banner_folder = $res_banner_dir[0];
 
   $form['banner_url'] = array(
@@ -52,14 +68,22 @@ function banner_settings_form($form,&$form_state){
     '#description' => t('Url to the directory where banners are stored(without trailing "/")'),
     '#size' => 50,
     '#maxlength' => 255,
-    '#required' => TRUE,
+    //'#required' => TRUE,
     '#default_value' => $banner_folder,
+  );
+
+  $form['update_tables'] = array(
+    '#type' => 'submit',
+    '#value' => t('Update Tables'),
+    '#name' => t('update_tables'),
+    '#suffix' => t('<br>'),
   );
 
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Submit')
   );
+
   return $form;
 }
 
@@ -68,9 +92,35 @@ function banner_settings_form_validate($form, &$form_state){
 }
 
 function banner_settings_form_submit($form, &$form_state){
+
+  if($form_state['triggering_element']['#name'] == "update_tables"){
+
+    $schema = get_schema();
+    //dpm($schema);
+
+    if(!db_table_exists("fossee_banner_details")){
+      db_create_table("fossee_banner_details",$schema['fossee_banner_details']);
+    }
+
+    if(!db_table_exists("fossee_website_index")){
+      db_create_table("fossee_website_index",$schema['fossee_website_index']);
+    }
+
+    if(!db_table_exists("fossee_site_banner_variables")){
+      db_create_table("fossee_site_banner_variables",$schema['fossee_site_banner_variables']);
+    }
+
+    drupal_set_message("All tables are updated");
+
+    return;
+  }
+
+
+
   $banner_dir = $form_state['values']['banner_dir'];
   $banner_url = $form_state['values']['banner_url'];
 
+  variable_set('fossee_site_banner_banner_admin',$form_state['values']['banner_admin']);
   variable_set('fossee_site_banner_max_file_size', $form_state['values']['file_size'] * 1024 * 1024);
   variable_set('fossee_site_banner_allowed_file_types', $form_state['values']['extensions']);
   drupal_set_message(t('Settings updated'), 'status');
@@ -84,22 +134,29 @@ function banner_settings_form_submit($form, &$form_state){
     variable_set('fossee_site_banner_banner_directory', $form_state['values']['banner_dir']);
   }
 
-  $db_update = db_update('fossee_site_banner_variables')
-  ->fields(array(
-    'value' => $banner_url,
-  ))
-  ->condition("name","banner_dir","=")
-  ->execute();
+  $db_result = db_select("fossee_site_banner_variables","n")
+    ->fields(n)
+    ->execute();
 
-  if($db_update == 0){
-    $db_insert = db_insert('fossee_site_banner_variables')
+  $rows = $db_result->rowCount();
+
+  if($rows>=1) {
+
+    $db_update = db_update('fossee_site_banner_variables')
+      ->fields(array(
+        'value' => $banner_url,
+      ))
+      ->condition("name", "banner_dir", "=")
+      ->execute();
+  } else {
+
+      $db_insert = db_insert('fossee_site_banner_variables')
         ->fields(array(
           'name' => 'banner_dir',
           'value' => $banner_url,
         ))
         ->execute();
   }
-
 
 }
 

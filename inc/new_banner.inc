@@ -5,9 +5,9 @@
  * 
  */
 
-
-
 function new_banner_form($form, &$form_state) {
+
+  module_load_include('inc','fossee_site_banner','inc/mail.inc');
 
   $form['upload_item'] = array(
     '#type' => 'file',
@@ -103,6 +103,9 @@ function new_banner_form_validate($form,&$form_state){
 
 function new_banner_form_submit($form, &$form_state) {
 
+  module_load_include('inc','fossee_site_banner','inc/mail');
+  global $user;
+
   $allowed_extensions = variable_get('fossee_site_banner_allowed_file_types', NULL);
   $allowed_extensions = str_replace(","," ",$allowed_extensions);
 
@@ -162,6 +165,10 @@ function new_banner_form_submit($form, &$form_state) {
       drupal_set_message("File Successfully Uploaded : " . $file->filename);
       drupal_set_message('Banner Name : ' . $banner_name);
       drupal_set_message('End Date : ' . date('Y-m-d H:i:s', $end_date));
+
+      $params['banner_name'] = $banner_name;
+      $params['to'] = variable_get('fossee_site_banner_banner_admin',NULL);
+      drupal_mail('fossee_site_banner','banner_created',$user->mail,language_default(),$params);
 
       drupal_goto("banners",array('external' => TRUE));
 
