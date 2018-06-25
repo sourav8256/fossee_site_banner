@@ -176,11 +176,11 @@ class FormAddWebsite extends FormBase{
                     ))
                     ->execute();
                 drupal_set_message("Domain added : " . $domain);
-            } catch (PDOException $e) {
+            } catch (\PDOException $e) {
                 if ($e->errorInfo[1] === 1062) {
                     drupal_set_message("Error 1062 : The Website ".$site_name." Already Exists, Please Enter A Different Website!");
                 }
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 drupal_set_message("Unknown Database Exception : Website Is Not Created");
 
             }

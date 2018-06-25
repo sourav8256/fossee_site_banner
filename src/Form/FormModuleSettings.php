@@ -67,8 +67,9 @@ class FormModuleSettings extends FormBase{
             '#default_value' => \Drupal::state()->get('fossee_site_banner_banner_directory', ''),
         );
 
+
         try {
-            $res_banner_dir = \Drupal::database()->select('fossee_new.fossee_site_banner_variables', 'n')
+            $res_banner_dir = \Drupal::database()->select($this->default_db.'fossee_site_banner_variables', 'n')
                 ->fields('n', array('value'))
                 ->range(0, 1)
                 ->condition('n.name', 'banner_dir', '=')
