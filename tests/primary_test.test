@@ -1,0 +1,65 @@
+<?php
+
+/**
+ * Tests the functionality of the Simpletest example content type.
+ */
+class SimpletestExampleTestCase extends DrupalWebTestCase {
+    //protected $privileged_user;
+
+    public static function getInfo() {
+        // Note: getInfo() strings are not translated with t().
+        return array(
+          'name' => 'Simpletest Example',
+          'description' => 'Ensure that the primary test content type provided functions properly.',
+          'group' => 'Fossee Site Banner',
+        );
+    }
+
+    public function setUp() {
+        // Enable any modules required for the test. This should be an array of
+        // module names.
+        parent::setUp(array('fossee_site_banner'));
+        // Create and log in our privileged user.
+        $this->privileged_user = $this->drupalCreateUser(array(
+          'see available banners',
+          'set banner status',
+          'add website',
+          'delete banner',
+          'delete website',
+          'administer banners',
+          ));
+        //$this->drupalLogin($this->privileged_user);
+        $this->drupalLogin($this->privileged_user);
+    }
+
+     /**
+    * Tests creation of a Simpletest example node.
+    */
+  public function _testSimpleTestExampleCreate() {
+    // Create node to edit.    
+    $edit = array();
+    $edit['title'] = $this->randomName(8);
+    $edit["body[und][0][value]"] = $this->randomName(16);
+    $this->drupalPost('node/add/simpletest-example', $edit, t('Save'));
+    $this->assertText(t('Simpletest Example Node Type @title has been created.', array('@title' => $edit['title'])));
+  }
+
+  public function _testCreateBanner(){
+
+  }
+
+  public function testBannersPage(){
+      $this->drupalGet("fossee-site-banner/banners");
+      $this->assertText("Create New Banner","Banner page opened");
+
+      $this->drupalGet("fossee-site-banner/new-banner");
+      $this->assertText("Create New Banner","Banner page opened");
+
+      $this->drupalGet("fossee-site-banner/banners");
+      $this->assertText("Create New Banner","Banner page opened");
+
+      $this->drupalGet("fossee-site-banner/banners");
+      $this->assertText("Create New Banner","Banner page opened");
+  }
+  
+}

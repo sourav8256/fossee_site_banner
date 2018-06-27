@@ -4,3 +4,5 @@ core = "7.x"
 description = "A custom module to manage banners."
 version = 7.x
 name = "Fossee Site Banner"
+
+files[] = tests/primary_test.test
