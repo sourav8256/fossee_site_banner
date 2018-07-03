@@ -78,6 +78,16 @@ function new_edit_banner_form($form, &$form_state, $arg_id)
 
     );
 
+    $form['back_button'] = array(
+
+        '#type' => 'button',
+        '#value' => t('Go Back'),
+        '#attributes' => array(
+            'onclick' => 'window.history.go(-1); return false;',
+        ),
+    
+    );
+
     return $form;
 
 }

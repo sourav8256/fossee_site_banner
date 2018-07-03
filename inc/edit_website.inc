@@ -30,11 +30,15 @@ function edit_website_form($form,&$form_state,$arg_site_code){
     '#name' => 'update_website',
   );
   
-  $form['goback'] = array( // submit
-    '#type' => 'submit',
-    '#value' => 'Go Back',
-    '#prefix' => '<br/><br/>',
-    '#name' => 'go_back',
+  
+  $form['back_button'] = array(
+
+    '#type' => 'button',
+    '#value' => t('Go Back'),
+    '#attributes' => array(
+        'onclick' => 'window.history.go(-1); return false;',
+    ),
+
   );
 
   return $form; 
