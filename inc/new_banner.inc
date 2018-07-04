@@ -103,15 +103,15 @@ function new_banner_form_validate($form,&$form_state){
 
 function new_banner_form_submit($form, &$form_state) {
 
+
   module_load_include('inc','fossee_site_banner','inc/mail');
   global $user;
 
   $allowed_extensions = variable_get('fossee_site_banner_allowed_file_types', NULL);
-  //$allowed_extensions = str_replace(","," ",$allowed_extensions);
 
   $validators = array(
     'file_validate_size' => array(variable_get('fossee_site_banner_max_file_size', NULL)), // size restriction for banner image size
-    'file_validate_extensions' => explode(",",$allowed_extensions) // allowed extensions of banner image
+    'file_validate_extensions' => array($allowed_extensions), // allowed extensions of banner image
   );
 
   $location = variable_get('fossee_site_banner_banner_directory', "not found");
@@ -126,7 +126,9 @@ function new_banner_form_submit($form, &$form_state) {
   $created_timestamp = time();
 
   /*saving uploaded file to a temporary location*/
-  $file = file_save_upload('upload_item', $validators, "temporary://"); // check validation from the $validators array and saves to a database with location
+  //$file = file_save_upload('upload_item', $validators, "temporary://"); // check validation from the $validators array and saves to a database with location
+
+  $file = custom_upload_file('upload_item', $validators, "temporary://");
 
   if($file) { // check if the file passed the validation and was uploaded
 
@@ -187,4 +189,78 @@ function generateNewFilename($filename,$timestamp){
   $extension = pathinfo($filename,PATHINFO_EXTENSION);
   $new_filename = $filename."_".$timestamp.".".$extension;
   return $new_filename;
+}
+
+
+function custom_upload_file($fieldname,$validators,$path){
+
+  //this is an array of errors if found
+  $errors = array();
+
+
+  // for checking if the file extension is allowed
+  $file_name = $_FILES['files']['name'][$fieldname];
+  //get file extension
+  $file_extension = explode(".",$file_name)[1];
+  
+  //array of allowed file extensions
+  $allowed_extensions = explode(",",$validators['file_validate_extensions'][0]);
+
+  //checking if the file_extension is present in the array of allowed_extensions
+  if(!in_array($file_extension,$allowed_extensions)){
+    $errors[] = "Invalid file type. Allowed file types are ".$validators['file_validate_extensions'][0];
+  }
+  // checking for allowed file type completes
+
+
+  //for checking file size
+
+  $max_allowed_filesize = $validators['file_validate_size'][0];
+  //size of the uploading file
+  $file_size = $_FILES['files']['size'][$fieldname];
+
+  if($file_size>$max_allowed_filesize){
+    $errors[] = "Filesize exceeded maximum allowed filesize ".($max_allowed_filesize/(1024*1024))." MBs";
+  }
+
+  //checking file size completes
+
+  //saving file given location
+  $realpath_of_destination = drupal_realpath($path);
+
+
+
+
+  //file is saved to the temporary location with the real filename
+  if(move_uploaded_file($_FILES['files']['tmp_name'][$fieldname], $realpath_of_destination.'/'.$file_name)){
+  //file is saved to the temporary location
+  //we need to return the filename for further use
+  $file->filename = $file_name;
+
+  } else {
+    //when move_upload_file fails for some reason
+    $errors[] = "Uploaded file could not be moved";
+  }
+  
+
+
+  //we need to print all the errors so user can understand what went wrong
+
+  foreach($errors as $error){
+    drupal_set_message($error,"error");
+  }
+
+
+
+  // Now we need to check if there were any errors
+  // and return false if there is any error
+  // and we can return the file if there is no error
+ 
+  if(sizeof($errors)!=0){
+    return false;
+  } else {
+    return $file;
+  }
+
+
 }
