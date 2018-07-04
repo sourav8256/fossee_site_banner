@@ -107,11 +107,11 @@ function new_banner_form_submit($form, &$form_state) {
   global $user;
 
   $allowed_extensions = variable_get('fossee_site_banner_allowed_file_types', NULL);
-  $allowed_extensions = str_replace(","," ",$allowed_extensions);
+  //$allowed_extensions = str_replace(","," ",$allowed_extensions);
 
   $validators = array(
     'file_validate_size' => array(variable_get('fossee_site_banner_max_file_size', NULL)), // size restriction for banner image size
-    'file_validate_extensions' => array($allowed_extensions) // allowed extensions of banner image
+    'file_validate_extensions' => explode(",",$allowed_extensions) // allowed extensions of banner image
   );
 
   $location = variable_get('fossee_site_banner_banner_directory', "not found");
