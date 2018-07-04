@@ -106,6 +106,16 @@ class FormAddWebsite extends FormBase{
             '#template' => '<button onclick="window.open(\'banners\',\'_self\'); return false;">All Banners</button>',
         );
 
+        $form['back_button'] = array(
+
+            '#type' => 'button',
+            '#value' => t('Go Back'),
+            '#attributes' => array(
+                'onclick' => 'window.history.go(-1); return false;',
+            ),
+        
+        );
+
         return $form;
     }
 
