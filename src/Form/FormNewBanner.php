@@ -132,7 +132,7 @@ class FormNewBanner extends FormBase{
         global $user;
 
         $allowed_extensions = \Drupal::state()->get('fossee_site_banner_allowed_file_types', "Not Set");
-        $allowed_extensions = str_replace(","," ",$allowed_extensions);
+        //$allowed_extensions = str_replace(","," ",$allowed_extensions);
 
         $validators = array(
             'file_validate_size' => array(\Drupal::state()->get('fossee_site_banner_max_file_size', "Not Set")), // size restriction for banner image size
@@ -148,17 +148,19 @@ class FormNewBanner extends FormBase{
 
 
         /*saving uploaded file to a temporary location*/
-        $file = file_save_upload('upload_item', $validators, "temporary://"); // check validation from the $validators array and saves to a database with location
+        //$file = file_save_upload('upload_item', $validators, "temporary://"); // check validation from the $validators array and saves to a database with location
+
+        $file = $this->custom_upload_file('upload_item', $validators, "temporary://");
 
         //dpm($file[0]->destination);
         //dpm($file);
 
 
-        if($file[0]->destination != NULL) { // check if the file passed the validation and was uploaded
+        if($file) { // check if the file passed the validation and was uploaded
 
-            $new_filename = $this->generateNewFilename(basename($file[0]->destination),$created_timestamp);
+            $new_filename = $this->generateNewFilename($file->filename,$created_timestamp);
             /* moving the file in temporary to the desired location and rename it to a filename_created_timestamp format */
-            if(!rename(drupal_realpath($file[0]->destination), $real_path."/".$new_filename)){
+            if(!rename(drupal_realpath("temporary://")."/".$file->filename, $real_path."/".$new_filename)){
                 drupal_set_message("Banner Not Created : File Renaming Failed!","error");
                 return;
             }
@@ -221,6 +223,80 @@ class FormNewBanner extends FormBase{
         $mailManager->mail("fossee_site_banner", $key, $to, $langcode, $params, NULL, TRUE);
 
     }
+
+
+public function custom_upload_file($fieldname,$validators,$path){
+
+    //this is an array of errors if found
+    $errors = array();
+
+  
+    // for checking if the file extension is allowed
+    $file_name = $_FILES['files']['name'][$fieldname];
+    //get file extension
+    $file_extension = explode(".",$file_name)[1];
+    
+    //array of allowed file extensions
+    $allowed_extensions = explode(",",$validators['file_validate_extensions'][0]);
+  
+    //checking if the file_extension is present in the array of allowed_extensions
+    if(!in_array($file_extension,$allowed_extensions)){
+      $errors[] = "Invalid file type. Allowed file types are ".$validators['file_validate_extensions'][0];
+    }
+    // checking for allowed file type completes
+  
+  
+    //for checking file size
+  
+    $max_allowed_filesize = $validators['file_validate_size'][0];
+    //size of the uploading file
+    $file_size = $_FILES['files']['size'][$fieldname];
+  
+    if($file_size>$max_allowed_filesize){
+      $errors[] = "Filesize exceeded maximum allowed filesize ".($max_allowed_filesize/(1024*1024))." MBs";
+    }
+  
+    //checking file size completes
+  
+    //saving file given location
+    $realpath_of_destination = drupal_realpath($path);
+  
+  
+  
+  
+    //file is saved to the temporary location with the real filename
+    if(move_uploaded_file($_FILES['files']['tmp_name'][$fieldname], $realpath_of_destination.'/'.$file_name)){
+    //file is saved to the temporary location
+    //we need to return the filename for further use
+    $file->filename = $file_name;
+  
+    } else {
+      //when move_upload_file fails for some reason
+      $errors[] = "Uploaded file could not be moved";
+    }
+    
+  
+  
+    //we need to print all the errors so user can understand what went wrong
+  
+    foreach($errors as $error){
+      drupal_set_message($error,"error");
+    }
+  
+  
+  
+    // Now we need to check if there were any errors
+    // and return false if there is any error
+    // and we can return the file if there is no error
+   
+    if(sizeof($errors)!=0){
+      return false;
+    } else {
+      return $file;
+    }
+  
+  
+  }
 
 
 }
